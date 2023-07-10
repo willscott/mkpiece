@@ -53,7 +53,7 @@ func main() {
 
 	overallSize := abi.PaddedPieceSize(size)
 	// we need to make this the 'next' power of 2 in order to have space for the index
-	next := 1 << (64 - bits.LeadingZeros64(uint64(overallSize)))
+	next := 1 << (64 - bits.LeadingZeros64(uint64(overallSize+256)))
 
 	a, err := datasegment.NewAggregate(abi.PaddedPieceSize(next), deals)
 	if err != nil {
