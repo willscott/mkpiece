@@ -20,13 +20,13 @@ import (
 func TestMain(t *testing.T) {
 	td := t.TempDir()
 	buf1 := bytes.NewBuffer(nil)
-	io.CopyN(buf1, rand.Reader, 1024*1024*10) // 10MB
+	io.CopyN(buf1, rand.Reader, 1024*1024*3)
 	if err := mkCar(td+"/carOne.car", buf1); err != nil {
 		t.Fatal(err)
 	}
 
 	buf2 := bytes.NewBuffer(nil)
-	io.CopyN(buf2, rand.Reader, 1024*1024*10) // 10MB
+	io.CopyN(buf2, rand.Reader, 1024*1024*3)
 	if err := mkCar(td+"/carTwo.car", buf2); err != nil {
 		t.Fatal(err)
 	}

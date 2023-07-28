@@ -33,8 +33,10 @@ func main() {
 	}
 	for _, e := range entries {
 		file.Seek(0, io.SeekStart)
-		segment := io.NewSectionReader(file, int64(e.Offset), int64(e.Size))
-		seg, err := os.OpenFile(fmt.Sprintf("%s/%d.chunk", os.Args[2], e.Offset), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+		strt := e.UnpaddedOffest()
+		leng := e.UnpaddedLength()
+		segment := io.NewSectionReader(file, int64(strt), int64(leng))
+		seg, err := os.OpenFile(fmt.Sprintf("%s/%d.chunk", os.Args[2], strt), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 		if err != nil {
 			panic(err)
 		}
@@ -42,10 +44,10 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		if n != int64(e.Size) {
+		if n != int64(leng) {
 			panic("didn't write enough")
 		}
 		seg.Close()
-		fmt.Printf("Segment found: %d - %d\n", e.Offset, e.Offset+e.Size)
+		fmt.Printf("Segment found: %d - %d\n", strt, strt+leng)
 	}
 }
