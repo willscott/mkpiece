@@ -71,17 +71,16 @@ func mkCar(name string, data *bytes.Buffer) error {
 	}
 	rtCid := rt.(cidlink.Link).Cid
 
-	carW, err := car.NewSelectiveWriter(context.Background(), &ls, rtCid, parse.CommonSelector_ExploreAllRecursively)
-	if err != nil {
-		return err
-	}
-
 	carOne, err := os.OpenFile(name, os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
 		return err
 	}
-	carW.WriteTo(carOne)
-	carOne.Close()
+	defer carOne.Close()
+
+	_, err = car.TraverseV1(context.Background(), &ls, rtCid, parse.CommonSelector_ExploreAllRecursively, carOne)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
