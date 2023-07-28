@@ -70,8 +70,10 @@ func ParseSegmentPieces(piece io.ReadSeeker) []io.Reader {
 
 	for _, e := range entries {
 		buf := bytes.NewBuffer(nil)
-		piece.Seek(int64(e.Offset), io.SeekStart)
-		io.CopyN(buf, piece, int64(e.Size))
+		upoff := abi.PaddedPieceSize(e.Offset).Unpadded()
+		piece.Seek(int64(upoff), io.SeekStart)
+		upSize := abi.PaddedPieceSize(e.Size).Unpadded()
+		io.CopyN(buf, piece, int64(upSize))
 		out = append(out, buf)
 	}
 	return out
